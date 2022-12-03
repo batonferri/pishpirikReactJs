@@ -3,12 +3,15 @@ import { useEffect, useState } from "react";
 import { getCardColor, getCardSymbol } from "./helper/get";
 import {
   aiTurn,
+  calculateCardValue,
   declareTheWinner,
   endOfTurn,
   playerTurn,
 } from "./helper/logic";
 import { useQuery } from "./hooks/useQuery";
 
+let turn = 1;
+let lastTaker = 0;
 function App() {
   const [playerOneHand, setPlayerOneHand] = useState([[], []]);
   const [game, setGame] = useState(false);
@@ -17,9 +20,7 @@ function App() {
   const [playerTwoStack, setPlayerTwoStack] = useState([]);
   const [playerTwoHand, setPlayerTwoHand] = useState([[], []]);
   const [middleBatch, setMiddleBatch] = useState([]);
-  const [turn, setTurn] = useState(1);
   const [hand, setHand] = useState(0);
-  const [lastTaker, setLastTaker] = useState(1);
 
   const { data } = useQuery("https://pishpirik-deal-card-api.vercel.app/api");
 
@@ -31,30 +32,34 @@ function App() {
   }, [game]);
 
   const handlePlayerOneClick = (card, index) => {
-    playerTurn(
-      turn,
-      setTurn,
+    if (turn !== 1) return;
+    const player = playerTurn(
       setMiddleBatch,
       setPlayerOneHand,
       playerOneHand,
       index,
       card,
       middleBatch,
-      setPlayerOneStack,
-      setLastTaker
+      setPlayerOneStack
     );
+    turn = 2;
+    lastTaker = player ? 1 : lastTaker;
   };
 
   if (game && turn === 2) {
-    aiTurn(
-      setLastTaker,
-      setTurn,
-      middleBatch,
-      setMiddleBatch,
-      setPlayerTwoHand,
-      playerTwoHand,
-      setPlayerTwoStack
-    );
+    if (turn !== 2) return;
+    setTimeout(() => {
+      const ai = aiTurn(
+        middleBatch,
+        setMiddleBatch,
+        setPlayerTwoHand,
+        playerTwoHand,
+        setPlayerTwoStack
+      );
+
+      lastTaker = ai ? 2 : lastTaker;
+      turn = 1;
+    }, 1000);
   }
 
   endOfTurn(
@@ -90,7 +95,9 @@ function App() {
         <div className="App">
           {!endGame ? (
             <>
-              <div className="cardCount">{playerTwoStack.length}</div>
+              <div className="cardCount">
+                {calculateCardValue(playerTwoStack)}
+              </div>
               <div className="container">
                 <div className="row">
                   {playerTwoHand?.map((card, i) => (
@@ -127,7 +134,9 @@ function App() {
                   ))}
                 </div>
               </div>
-              <div className="cardCount">{playerOneStack.length}</div>
+              <div className="cardCount">
+                {calculateCardValue(playerOneStack)}
+              </div>
             </>
           ) : (
             <div className="result" onClick={() => location.reload()}>

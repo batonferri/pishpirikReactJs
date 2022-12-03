@@ -9,8 +9,6 @@ const aiLogic = (mid, array) => {
 };
 
 export const aiTurn = (
-  setLastTaker,
-  setTurn,
   middleBatch,
   setMiddleBatch,
   setPlayerTwoHand,
@@ -19,54 +17,39 @@ export const aiTurn = (
 ) => {
   const card = aiLogic(middleBatch, playerTwoHand);
   const index = playerTwoHand.indexOf(card);
-  setTimeout(() => {
-    setMiddleBatch((prev) => [...prev, card]);
-    setPlayerTwoHand(playerTwoHand.filter((c, i) => i !== index));
-    if (
-      (card.number === "J" && middleBatch.length > 0) ||
-      card.number === middleBatch.at(-1)?.number
-    ) {
-      setTimeout(() => {
-        setPlayerTwoStack((prev) => [...prev, ...middleBatch, card]);
-        setMiddleBatch([]);
-      }, 400);
-      setLastTaker(2);
-    }
-  }, 1000);
-  setTurn((prev) => prev - 1);
+  setMiddleBatch((prev) => [...prev, card]);
+  setPlayerTwoHand(playerTwoHand.filter((c, i) => i !== index));
+  if (
+    (card.number === "J" && middleBatch.length > 0) ||
+    card.number === middleBatch.at(-1)?.number
+  ) {
+    setTimeout(() => {
+      setPlayerTwoStack((prev) => [...prev, ...middleBatch, card]);
+      setMiddleBatch([]);
+    }, 300);
+
+    return true;
+  }
 };
 
 export const playerTurn = (
-  turn,
-  setTurn,
   setMiddleBatch,
   setPlayerOneHand,
   playerOneHand,
   index,
   card,
   middleBatch,
-  setPlayerOneStack,
-  setLastTaker
+  setPlayerOneStack
 ) => {
-  if (turn !== 1) return;
-
-  setTimeout(() => {
-    setTurn((prev) => prev + 1);
-  }, 500);
   setMiddleBatch((prev) => [...prev, card]);
   setPlayerOneHand(playerOneHand.filter((c, i) => i !== index));
-
   if (
     (card.number === "J" && middleBatch.length > 0) ||
     card.number === middleBatch.at(-1)?.number
   ) {
-    setTimeout(() => {
-      setPlayerOneStack((prev) => [...prev, ...middleBatch, card]);
-      setMiddleBatch([]);
-      setLastTaker(1);
-    }, 400);
-
-    return;
+    setPlayerOneStack((prev) => [...prev, ...middleBatch, card]);
+    setMiddleBatch([]);
+    return true;
   }
 };
 
@@ -89,9 +72,11 @@ export const endOfTurn = (
     if (hand >= 6) return;
 
     if (hand < 5) {
-      setHand((prev) => prev + 1);
-      setPlayerOneHand(data?.playerOneCards[hand + 1]);
-      setPlayerTwoHand(data?.playerTwoCards[hand + 1]);
+      setTimeout(() => {
+        setHand((prev) => prev + 1);
+        setPlayerOneHand(data?.playerOneCards[hand + 1]);
+        setPlayerTwoHand(data?.playerTwoCards[hand + 1]);
+      }, 300);
       return;
     }
 
@@ -116,12 +101,49 @@ export const endOfTurn = (
   }
 };
 
+export const calculateCardValue = (deckOfCards) => {
+  const newArray = [];
+  for (const card of deckOfCards) {
+    if (
+      card.number === "A" ||
+      card.number === "K" ||
+      card.number === "Q" ||
+      card.number === "J" ||
+      card.number === "10" ||
+      (card.number === "2" && card.suit === "clubs")
+    )
+      newArray.push(1);
+    if (card.number === "10" && card.suit === "diamonds") {
+      newArray.push(1);
+    }
+  }
+
+  return newArray.reduce((a, b) => a + b, 0);
+};
+
+const giveThreePoints = (arr1, arr2) => {
+  if (arr1.length > arr2.length) return 3;
+  return 0;
+};
+
 export const declareTheWinner = (playerOneStack, playerTwoStack) => {
-  if (playerOneStack.length > playerTwoStack.length)
-    return `You Won The Game ${playerOneStack.length} to ${playerTwoStack.length}`;
+  console.log({
+    player: playerOneStack,
+    comp: playerTwoStack,
+  });
 
-  if (playerOneStack.length < playerTwoStack.length)
-    return `AI Won The Game ${playerTwoStack.length} to ${playerOneStack.length}`;
+  const playerOneTotalScore =
+    calculateCardValue(playerOneStack) +
+    giveThreePoints(playerOneStack, playerTwoStack);
+  const computerTotalScore =
+    calculateCardValue(playerTwoStack) +
+    giveThreePoints(playerTwoStack, playerOneStack);
 
-  return `DRAW ${playerTwoStack.length} - ${playerOneStack.length}`;
+  if (playerOneTotalScore > computerTotalScore)
+    return `You Won The Game ${playerOneTotalScore} to ${computerTotalScore}`;
+
+  if (playerOneTotalScore < computerTotalScore)
+    return `AI Won The Game ${computerTotalScore} to ${playerOneTotalScore}`;
+
+  return `DRAW ${computerTotalScore} - ${playerOneTotalScore}`;
 };
