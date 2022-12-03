@@ -4,6 +4,8 @@ import { getCardColor, getCardSymbol } from "./helper/get";
 import {
   aiTurn,
   calculateCardValue,
+  checkIfCardHasPoints,
+  checkIfCardIsPishpirik,
   declareTheWinner,
   endOfTurn,
   playerTurn,
@@ -97,72 +99,112 @@ function App() {
         </div>
       ) : (
         <div className="App">
+          <div className="cardCount">
+            <p>Cards: {playerTwoStack.length}</p>
+            <p>Points: {calculateCardValue(playerTwoStack)}</p>
+            <p>Pishpirik: {playerTwoPishpirik.length}</p>
+          </div>
           {!endGame ? (
-            <>
-              <div className="cardCount">
-                <p>total nr. of cards: {playerTwoStack.length}</p>
-                <p>Points: {calculateCardValue(playerTwoStack)}</p>
-                <p>Pishpirik: {playerTwoPishpirik.length}</p>
+            <div className="container">
+              <div className="row">
+                {playerTwoHand?.map((card, i) => (
+                  <div key={i} className={"card back"} />
+                ))}
               </div>
-              <div className="container">
-                <div className="row">
-                  {playerTwoHand?.map((card, i) => (
-                    <div key={i} className={"card back"} />
-                  ))}
-                </div>
-                <div className="row middleBatch">
-                  {middleBatch?.map((card, i) => (
-                    <div
-                      key={i}
-                      className={`card ${
-                        getCardColor(card.suit) ? "cardColorRed" : ""
-                      }`}
-                    >
-                      <div className="topNumber">{card.number}</div>
-                      <div className="suit">{getCardSymbol(card.suit)} </div>
-                      <div className="bottomNumber">{card.number}</div>
-                    </div>
-                  ))}
-                </div>
-                <div className="row">
-                  {playerOneHand?.map((card, i) => (
-                    <div
-                      key={i}
-                      className={`card ${
-                        getCardColor(card.suit) && "cardColorRed"
-                      }`}
-                      onClick={() => handlePlayerOneClick(card, i)}
-                    >
-                      <div className="topNumber">{card.number}</div>
-                      <div className="suit">{getCardSymbol(card.suit)}</div>
-                      <div className="bottomNumber">{card.number}</div>
-                    </div>
-                  ))}
-                </div>
+              <div className="row middleBatch">
+                {middleBatch?.map((card, i) => (
+                  <div
+                    key={i}
+                    className={`card ${
+                      getCardColor(card.suit) ? "cardColorRed" : ""
+                    }`}
+                  >
+                    <div className="topNumber">{card.number}</div>
+                    <div className="suit">{getCardSymbol(card.suit)} </div>
+                    <div className="bottomNumber">{card.number}</div>
+                  </div>
+                ))}
               </div>
-              <div className="cardCount">
-                <p>total nr. of cards: {playerOneStack.length}</p>
-                <p> Points: {calculateCardValue(playerOneStack)}</p>
-                <p>Pishpirik: {playerOnePishpirik.length}</p>
+              <div className="row">
+                {playerOneHand?.map((card, i) => (
+                  <div
+                    key={i}
+                    className={`card ${
+                      getCardColor(card.suit) && "cardColorRed"
+                    }`}
+                    onClick={() => handlePlayerOneClick(card, i)}
+                  >
+                    <div className="topNumber">{card.number}</div>
+                    <div className="suit">{getCardSymbol(card.suit)}</div>
+                    <div className="bottomNumber">{card.number}</div>
+                  </div>
+                ))}
               </div>
-            </>
+            </div>
           ) : (
-            <div className="result" onClick={() => location.reload()}>
-              {declareTheWinner(
-                playerOneStack,
-                playerTwoStack,
-                playerOnePishpirik,
-                playerTwoPishpirik
-              )}
-              <p className="endGameMessage">
-                Click Anywhere In The Screen To Play Again
-              </p>
+            <div className="container containerFinalScreen">
+              <div className="row rowFinalScreen">
+                {playerTwoStack?.map((card, i) => (
+                  <div
+                    key={i}
+                    className={`card cardFinalScreen ${
+                      getCardColor(card.suit) ? "cardColorRed" : ""
+                    }`}
+                    style={{
+                      marginTop: checkIfCardHasPoints(card) ? "-20px" : 0,
+                      border: checkIfCardIsPishpirik(card, playerTwoPishpirik)
+                        ? "3px solid red"
+                        : "",
+                    }}
+                  >
+                    <div className="topNumber">{card.number}</div>
+                    <div className="suit">{getCardSymbol(card.suit)}</div>
+                  </div>
+                ))}
+              </div>
+              <div className="result" onClick={() => location.reload()}>
+                {declareTheWinner(
+                  playerOneStack,
+                  playerTwoStack,
+                  playerOnePishpirik,
+                  playerTwoPishpirik
+                )}
+                <p className="endGameMessage">
+                  Click Anywhere In The Text To Play Again
+                </p>
+              </div>
+              <div className="row rowFinalScreen">
+                {playerOneStack?.map((card, i) => (
+                  <div
+                    key={i}
+                    className={`card cardFinalScreen ${
+                      getCardColor(card.suit) ? "cardColorRed" : ""
+                    }`}
+                    style={{
+                      marginTop: checkIfCardHasPoints(card) ? "-20px" : 0,
+                      border: checkIfCardIsPishpirik(card, playerOnePishpirik)
+                        ? "3px solid red"
+                        : "",
+                    }}
+                  >
+                    <div className="topNumber">{card.number}</div>
+                    <div className="suit">{getCardSymbol(card.suit)}</div>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
+
+          <div className="cardCount">
+            <p>Cards: {playerOneStack.length}</p>
+            <p>Points: {calculateCardValue(playerOneStack)}</p>
+            <p>Pishpirik: {playerOnePishpirik.length}</p>
+          </div>
         </div>
       )}
     </>
   );
 }
 
+//
 export default App;

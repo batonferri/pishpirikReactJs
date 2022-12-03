@@ -174,3 +174,28 @@ export const declareTheWinner = (
 
   return `DRAW ${computerTotalScore} - ${playerOneTotalScore}`;
 };
+
+export const checkIfCardHasPoints = (card) => {
+  if (
+    card.number === "A" ||
+    card.number === "K" ||
+    card.number === "Q" ||
+    card.number === "J" ||
+    card.number === "10" ||
+    (card.number === "2" && card.suit === "clubs")
+  )
+    return true;
+
+  return false;
+};
+
+export const checkIfCardIsPishpirik = (obj, array) => {
+  for (const card of array) {
+    if (card.suit === obj.suit) {
+      if (card.number === obj.number) {
+        return true;
+      }
+    }
+  }
+  return false;
+};

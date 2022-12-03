@@ -1,6 +1,8 @@
 .App {
   display: flex;
   flex-direction: column;
+  justify-content: space-around;
+  height: 98vh;
 }
 
 .container {
@@ -80,14 +82,11 @@
 
 .cardCount {
   display: flex;
-  flex-direction: column;
+  font-weight: bolder;
   align-items: center;
-  justify-content: center;
-  width: 150px;
-  height: 80px;
-  background-color: white;
-  color: black;
-  border-radius: 5px;
+  justify-content: space-around;
+  font-size: 35px;
+  color: white;
 }
 
 .cardCount p {
@@ -107,7 +106,7 @@
 }
 
 .result {
-  height: 97vh;
+  height: 60vh;
   display: flex;
   flex-direction: column;
   gap: 15px;
@@ -115,8 +114,34 @@
   align-items: center;
   font-weight: 900;
   font-size: 70px;
+  cursor: pointer;
 }
 
 .endGameMessage {
   font-size: 16px;
+}
+
+.containerFinalScreen {
+  height: 60vh;
+  gap: 10px;
+}
+
+.rowFinalScreen {
+  gap: 1px;
+}
+
+.cardFinalScreen {
+  font-weight: 100;
+  background-color: white;
+  border: 1px solid black;
+  border-radius: 5px;
+  width: 30px;
+  height: 40px;
+  padding: 10px;
+  overflow: hidden;
+}
+
+.cardFinalScreen .suit p {
+  margin: 0;
+  font-size: 25px;
 }
