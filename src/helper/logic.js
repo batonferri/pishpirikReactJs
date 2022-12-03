@@ -13,7 +13,8 @@ export const aiTurn = (
   setMiddleBatch,
   setPlayerTwoHand,
   playerTwoHand,
-  setPlayerTwoStack
+  setPlayerTwoStack,
+  setPlayerTwoPishpirik
 ) => {
   const card = aiLogic(middleBatch, playerTwoHand);
   const index = playerTwoHand.indexOf(card);
@@ -23,6 +24,12 @@ export const aiTurn = (
     (card.number === "J" && middleBatch.length > 0) ||
     card.number === middleBatch.at(-1)?.number
   ) {
+    if (
+      middleBatch.length === 1 &&
+      card.number === middleBatch.at(-1)?.number
+    ) {
+      setPlayerTwoPishpirik((prev) => [...prev, card]);
+    }
     setTimeout(() => {
       setPlayerTwoStack((prev) => [...prev, ...middleBatch, card]);
       setMiddleBatch([]);
@@ -39,7 +46,8 @@ export const playerTurn = (
   index,
   card,
   middleBatch,
-  setPlayerOneStack
+  setPlayerOneStack,
+  setPlayerOnePishpirik
 ) => {
   setMiddleBatch((prev) => [...prev, card]);
   setPlayerOneHand(playerOneHand.filter((c, i) => i !== index));
@@ -47,6 +55,12 @@ export const playerTurn = (
     (card.number === "J" && middleBatch.length > 0) ||
     card.number === middleBatch.at(-1)?.number
   ) {
+    if (
+      middleBatch.length === 1 &&
+      card.number === middleBatch.at(-1)?.number
+    ) {
+      setPlayerOnePishpirik((prev) => [...prev, card]);
+    }
     setPlayerOneStack((prev) => [...prev, ...middleBatch, card]);
     setMiddleBatch([]);
     return true;
@@ -121,23 +135,36 @@ export const calculateCardValue = (deckOfCards) => {
   return newArray.reduce((a, b) => a + b, 0);
 };
 
+const calculatePishpirik = (deckOfCards) => {
+  const newArray = [];
+  for (const card of deckOfCards) {
+    newArray.push(10);
+    if (card.number === "J") {
+      newArray.push(10);
+    }
+  }
+  return newArray.reduce((a, b) => a + b, 0);
+};
+
 const giveThreePoints = (arr1, arr2) => {
   if (arr1.length > arr2.length) return 3;
   return 0;
 };
 
-export const declareTheWinner = (playerOneStack, playerTwoStack) => {
-  console.log({
-    player: playerOneStack,
-    comp: playerTwoStack,
-  });
-
+export const declareTheWinner = (
+  playerOneStack,
+  playerTwoStack,
+  playerOnePishpirik,
+  playerTwoPishpirik
+) => {
   const playerOneTotalScore =
     calculateCardValue(playerOneStack) +
-    giveThreePoints(playerOneStack, playerTwoStack);
+    giveThreePoints(playerOneStack, playerTwoStack) +
+    calculatePishpirik(playerOnePishpirik);
   const computerTotalScore =
     calculateCardValue(playerTwoStack) +
-    giveThreePoints(playerTwoStack, playerOneStack);
+    giveThreePoints(playerTwoStack, playerOneStack) +
+    calculatePishpirik(playerTwoPishpirik);
 
   if (playerOneTotalScore > computerTotalScore)
     return `You Won The Game ${playerOneTotalScore} to ${computerTotalScore}`;

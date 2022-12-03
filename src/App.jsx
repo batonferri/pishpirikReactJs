@@ -13,12 +13,14 @@ import { useQuery } from "./hooks/useQuery";
 let turn = 1;
 let lastTaker = 0;
 function App() {
-  const [playerOneHand, setPlayerOneHand] = useState([[], []]);
   const [game, setGame] = useState(false);
   const [endGame, setEndGame] = useState(false);
+  const [playerOneHand, setPlayerOneHand] = useState([[], []]);
   const [playerOneStack, setPlayerOneStack] = useState([]);
-  const [playerTwoStack, setPlayerTwoStack] = useState([]);
+  const [playerOnePishpirik, setPlayerOnePishpirik] = useState([]);
   const [playerTwoHand, setPlayerTwoHand] = useState([[], []]);
+  const [playerTwoStack, setPlayerTwoStack] = useState([]);
+  const [playerTwoPishpirik, setPlayerTwoPishpirik] = useState([]);
   const [middleBatch, setMiddleBatch] = useState([]);
   const [hand, setHand] = useState(0);
 
@@ -40,7 +42,8 @@ function App() {
       index,
       card,
       middleBatch,
-      setPlayerOneStack
+      setPlayerOneStack,
+      setPlayerOnePishpirik
     );
     turn = 2;
     lastTaker = player ? 1 : lastTaker;
@@ -54,7 +57,8 @@ function App() {
         setMiddleBatch,
         setPlayerTwoHand,
         playerTwoHand,
-        setPlayerTwoStack
+        setPlayerTwoStack,
+        setPlayerTwoPishpirik
       );
 
       lastTaker = ai ? 2 : lastTaker;
@@ -96,7 +100,9 @@ function App() {
           {!endGame ? (
             <>
               <div className="cardCount">
-                {calculateCardValue(playerTwoStack)}
+                <p>total nr. of cards: {playerTwoStack.length}</p>
+                <p>Points: {calculateCardValue(playerTwoStack)}</p>
+                <p>Pishpirik: {playerTwoPishpirik.length}</p>
               </div>
               <div className="container">
                 <div className="row">
@@ -135,12 +141,19 @@ function App() {
                 </div>
               </div>
               <div className="cardCount">
-                {calculateCardValue(playerOneStack)}
+                <p>total nr. of cards: {playerOneStack.length}</p>
+                <p> Points: {calculateCardValue(playerOneStack)}</p>
+                <p>Pishpirik: {playerOnePishpirik.length}</p>
               </div>
             </>
           ) : (
             <div className="result" onClick={() => location.reload()}>
-              {declareTheWinner(playerOneStack, playerTwoStack)}
+              {declareTheWinner(
+                playerOneStack,
+                playerTwoStack,
+                playerOnePishpirik,
+                playerTwoPishpirik
+              )}
               <p className="endGameMessage">
                 Click Anywhere In The Screen To Play Again
               </p>
