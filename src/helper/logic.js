@@ -30,6 +30,7 @@ export const aiTurn = (
     ) {
       setPlayerTwoPishpirik((prev) => [...prev, card]);
     }
+
     setTimeout(() => {
       setPlayerTwoStack((prev) => [...prev, ...middleBatch, card]);
       setMiddleBatch([]);
@@ -61,6 +62,7 @@ export const playerTurn = (
     ) {
       setPlayerOnePishpirik((prev) => [...prev, card]);
     }
+
     setPlayerOneStack((prev) => [...prev, ...middleBatch, card]);
     setMiddleBatch([]);
     return true;
@@ -94,19 +96,17 @@ export const endOfTurn = (
       return;
     }
 
-    setTimeout(() => {
-      if (lastTaker === 1) {
+    if (lastTaker === 1) {
+      setTimeout(() => {
         setPlayerOneStack((prev) => [...prev, ...middleBatch]);
-        setTimeout(() => {
-          setMiddleBatch([]);
-        }, 700);
-      } else {
+        setMiddleBatch([]);
+      }, 700);
+    } else {
+      setTimeout(() => {
         setPlayerTwoStack((prev) => [...prev, ...middleBatch]);
-        setTimeout(() => {
-          setMiddleBatch([]);
-        }, 700);
-      }
-    }, 100);
+        setMiddleBatch([]);
+      }, 700);
+    }
 
     setTimeout(() => {
       setEndGame(true);

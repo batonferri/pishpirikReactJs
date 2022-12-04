@@ -52,7 +52,6 @@ function App() {
   };
 
   if (game && turn === 2) {
-    if (turn !== 2) return;
     setTimeout(() => {
       const ai = aiTurn(
         middleBatch,

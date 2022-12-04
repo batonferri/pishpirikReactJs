@@ -7,7 +7,7 @@ export const getCardColor = (string) => {
 export const getCardSymbol = (string) => {
   switch (string) {
     case "hearts":
-      return <p>&#10084;</p>;
+      return <p>&#x2665;</p>;
     case "spades":
       return <p>&#9824;</p>;
     case "diamonds":
