@@ -9,6 +9,7 @@ import {
   declareTheWinner,
   endOfTurn,
   playerTurn,
+  removeDuplicateObjectInArray,
 } from "./helper/logic";
 import { useQuery } from "./hooks/useQuery";
 
@@ -99,9 +100,12 @@ function App() {
       ) : (
         <div className="App">
           <div className="cardCount">
-            <p>Cards: {playerTwoStack.length}</p>
+            <p>Cards: {removeDuplicateObjectInArray(playerTwoStack)?.length}</p>
             <p>Points: {calculateCardValue(playerTwoStack)}</p>
-            <p>Pishpirik: {playerTwoPishpirik.length}</p>
+            <p>
+              Pishpirik:
+              {removeDuplicateObjectInArray(playerTwoPishpirik)?.length}
+            </p>
           </div>
           {!endGame ? (
             <div className="container">
@@ -143,23 +147,25 @@ function App() {
           ) : (
             <div className="container containerFinalScreen">
               <div className="row rowFinalScreen">
-                {playerTwoStack?.map((card, i) => (
-                  <div
-                    key={i}
-                    className={`card cardFinalScreen ${
-                      getCardColor(card.suit) ? "cardColorRed" : ""
-                    }`}
-                    style={{
-                      marginTop: checkIfCardHasPoints(card) ? "-20px" : 0,
-                      border: checkIfCardIsPishpirik(card, playerTwoPishpirik)
-                        ? "3px solid red"
-                        : "",
-                    }}
-                  >
-                    <div className="topNumber">{card.number}</div>
-                    <div className="suit">{getCardSymbol(card.suit)}</div>
-                  </div>
-                ))}
+                {removeDuplicateObjectInArray(playerTwoStack)?.map(
+                  (card, i) => (
+                    <div
+                      key={i}
+                      className={`card cardFinalScreen ${
+                        getCardColor(card.suit) ? "cardColorRed" : ""
+                      }`}
+                      style={{
+                        marginTop: checkIfCardHasPoints(card) ? "-20px" : 0,
+                        border: checkIfCardIsPishpirik(card, playerTwoPishpirik)
+                          ? "3px solid red"
+                          : "",
+                      }}
+                    >
+                      <div className="topNumber">{card.number}</div>
+                      <div className="suit">{getCardSymbol(card.suit)}</div>
+                    </div>
+                  )
+                )}
               </div>
               <div className="result" onClick={() => location.reload()}>
                 {declareTheWinner(
@@ -173,31 +179,36 @@ function App() {
                 </p>
               </div>
               <div className="row rowFinalScreen">
-                {playerOneStack?.map((card, i) => (
-                  <div
-                    key={i}
-                    className={`card cardFinalScreen ${
-                      getCardColor(card.suit) ? "cardColorRed" : ""
-                    }`}
-                    style={{
-                      marginTop: checkIfCardHasPoints(card) ? "-20px" : 0,
-                      border: checkIfCardIsPishpirik(card, playerOnePishpirik)
-                        ? "3px solid red"
-                        : "",
-                    }}
-                  >
-                    <div className="topNumber">{card.number}</div>
-                    <div className="suit">{getCardSymbol(card.suit)}</div>
-                  </div>
-                ))}
+                {removeDuplicateObjectInArray(playerOneStack)?.map(
+                  (card, i) => (
+                    <div
+                      key={i}
+                      className={`card cardFinalScreen ${
+                        getCardColor(card.suit) ? "cardColorRed" : ""
+                      }`}
+                      style={{
+                        marginTop: checkIfCardHasPoints(card) ? "-20px" : 0,
+                        border: checkIfCardIsPishpirik(card, playerOnePishpirik)
+                          ? "3px solid red"
+                          : "",
+                      }}
+                    >
+                      <div className="topNumber">{card.number}</div>
+                      <div className="suit">{getCardSymbol(card.suit)}</div>
+                    </div>
+                  )
+                )}
               </div>
             </div>
           )}
 
           <div className="cardCount">
-            <p>Cards: {playerOneStack.length}</p>
+            <p>Cards: {removeDuplicateObjectInArray(playerOneStack)?.length}</p>
             <p>Points: {calculateCardValue(playerOneStack)}</p>
-            <p>Pishpirik: {playerOnePishpirik.length}</p>
+            <p>
+              Pishpirik:
+              {removeDuplicateObjectInArray(playerOnePishpirik)?.length}
+            </p>
           </div>
         </div>
       )}

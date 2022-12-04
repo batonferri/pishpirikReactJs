@@ -115,9 +115,19 @@ export const endOfTurn = (
   }
 };
 
+export const removeDuplicateObjectInArray = (arr) => {
+  if (arr.length === 0) return arr;
+  return (arr = arr.filter(
+    (value, index, self) =>
+      index ===
+      self.findIndex((t) => t.suit === value.suit && t.number === value.number)
+  ));
+};
+
 export const calculateCardValue = (deckOfCards) => {
+  const array = removeDuplicateObjectInArray(deckOfCards);
   const newArray = [];
-  for (const card of deckOfCards) {
+  for (const card of array) {
     if (
       card.number === "A" ||
       card.number === "K" ||
@@ -136,8 +146,9 @@ export const calculateCardValue = (deckOfCards) => {
 };
 
 const calculatePishpirik = (deckOfCards) => {
+  const array = removeDuplicateObjectInArray(deckOfCards);
   const newArray = [];
-  for (const card of deckOfCards) {
+  for (const card of array) {
     newArray.push(10);
     if (card.number === "J") {
       newArray.push(10);
@@ -147,7 +158,10 @@ const calculatePishpirik = (deckOfCards) => {
 };
 
 const giveThreePoints = (arr1, arr2) => {
-  if (arr1.length > arr2.length) return 3;
+  const array1 = removeDuplicateObjectInArray(arr1);
+  const array2 = removeDuplicateObjectInArray(arr2);
+
+  if (array1.length > array2.length) return 3;
   return 0;
 };
 
